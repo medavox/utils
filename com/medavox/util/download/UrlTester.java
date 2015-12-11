@@ -6,6 +6,8 @@ import java.io.*;
 import java.nio.charset.*;
 import java.util.*;
 
+import com.medavox.util.io.Bytes;
+
 
 /**Manually de-garbles redirection URLs encoded in UTF-8, which Java mis-handles.
  * 
@@ -97,11 +99,11 @@ public class UrlTester
              * where n = the padding zeros, which could contain data in another scenario
              * 
              * new byte = MMPPPPPP*/
-            if(testBit(7, bytes[i])
-            && testBit(6, bytes[i])
-            && !testBit(5, bytes[i])
-            && testBit(7, bytes[i+1])
-            && !testBit(6, bytes[i+1]))//if bit matches 110xxxxx && nextbyte matches 10xxxxxx
+            if( Bytes.testBit(7, bytes[i])
+            &&  Bytes.testBit(6, bytes[i])
+            && !Bytes.testBit(5, bytes[i])
+            &&  Bytes.testBit(7, bytes[i+1])
+            && !Bytes.testBit(6, bytes[i+1]))//if bit matches 110xxxxx && nextbyte matches 10xxxxxx
             {
                 byte newByte = (byte)(bytes[i] << 6);
                 byte part2 = (byte)(bytes[i+1] & (byte)0x3F);
@@ -126,46 +128,6 @@ public class UrlTester
         return shortret;
     }
     
-    public static boolean testBit(int bitNum, byte testee)
-    {
-        if(bitNum < 0
-        || bitNum > 7)
-        {
-            throw new IllegalArgumentException("bitNum was <0 or >7");
-        }
-        
-        byte tester = (byte)0x01;
-        tester <<= bitNum;
-        return (testee & tester) != 0;
-    }
-    
-    public static byte setBit(int bitNum, byte settee)
-    {
-        if(bitNum < 0
-        || bitNum > 7)
-        {
-            throw new IllegalArgumentException("bitNum was <0 or >7");
-        }
-        
-        byte setter = (byte)0x01;
-        setter <<= bitNum;
-        return (byte)(settee | setter);
-    }
-    
-    public static byte unsetBit(int bitNum, byte settee)
-    {
-        if(bitNum < 0
-        || bitNum > 7)
-        {
-            throw new IllegalArgumentException("bitNum was <0 or >7");
-        }
-        
-        byte setter = (byte)0x01;
-        setter <<= bitNum;
-        setter = (byte)~setter;
-        return (byte)(setter & settee);
-    }
-    
     /**For every non-ASCII byte (unsigned byte > 0x7F),
      * replace byte with bytes representing this string: "%XX", 
      * where XX is the byte's value as hexadecimal.
@@ -186,7 +148,7 @@ public class UrlTester
             }
             while(i < byc.length)
             {
-                if(testBit(7, byc[i]))//if bit matches 1xxxxxxx, ie is not ascii/UTF-8 single-byte encoding
+                if(Bytes.testBit(7, byc[i]))//if bit matches 1xxxxxxx, ie is not ascii/UTF-8 single-byte encoding
                 {
                     proc[retLen] = percentByte[0];
                     proc[retLen+1] = byteToHex(byc[i]).getBytes()[0];
@@ -216,12 +178,12 @@ public class UrlTester
     }
     
     public static String byteToHex(byte byt)
-	{
-		char[] hexChars = new char[2];
+    {
+        char[] hexChars = new char[2];
         int v = byt & 0xFF;
         hexChars[0] = hexArray[v >>> 4];
         hexChars[1] = hexArray[v & 0x0F];
 
-		return new String(hexChars);
-	}
+        return new String(hexChars);
+    }
 }
