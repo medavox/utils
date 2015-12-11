@@ -1,6 +1,7 @@
 package com.medavox.util.io;
 
 import java.util.Set;
+import java.util.Scanner;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -75,4 +76,45 @@ public class StringUtils
         }
     }
     
+    /**get a boolean response from a yes-or-no question. True for yes, false for no.
+     * @param questionText the text to display as the question.*/
+    public static boolean askQuestion(String questionText)
+    {
+        //String[] yesses = {"ye", "ya", "yu"};
+        //String[] noes = {"no", "na"};
+        //String[] validResponses
+        Scanner sc = new Scanner(System.in);
+        String reply = "";
+        while(!reply.toLowerCase().equals("y")
+        && !reply.toLowerCase().startsWith("ye") 
+        && !reply.toLowerCase().startsWith("ya") 
+        && !reply.toLowerCase().startsWith("yu") 
+        && !reply.equalsIgnoreCase("n")
+        && !reply.toLowerCase().startsWith("no")
+        && !reply.toLowerCase().startsWith("na") )
+        {//keep asking until they give a valid response
+            System.out.print(questionText);
+            reply = sc.nextLine();
+        }
+        if(reply.length() == 0
+        || reply.toLowerCase().equals("y")
+        || reply.toLowerCase().startsWith("ye") 
+        || reply.toLowerCase().startsWith("ya") 
+        || reply.toLowerCase().startsWith("yu") )
+        {
+            return true;
+        }
+        else if(reply.equalsIgnoreCase("n")
+        || reply.toLowerCase().startsWith("no")
+        || reply.toLowerCase().startsWith("na"))
+        {
+            return false;
+        }
+        else
+        {//if they managed to break this,
+        //then they probably aren't even interested in the question itself, so it's a no
+            System.out.println("you broke a simple yes-or-no question! Well done!\nDo you, or do you want to work in QA?");
+            return false;
+        }
+    }
 }
