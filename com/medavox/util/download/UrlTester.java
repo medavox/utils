@@ -27,11 +27,6 @@ import com.medavox.util.io.Bytes;
  * which Java can't do.*/
 public class UrlTester
 {
-    //static String urlLong = "http://embrace-your-earth.tumblr.com/post/128213186742/let-them-be-free-%E0%A5%90";
-    //static String urlShort = "http://embrace-your-earth.tumblr.com/post/128213186742";
-    //static String urlShort = "http://embrace-your-earth.tumblr.com/post/130752755192";
-    //127380551986/beyonslayed-flawlessvevo-yonc%C3%A9-the-last
-    //static String urlShort = "http://dekukiss.tumblr.com/post/127380551986";
     public static PrintStream o = System.out;
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
     
