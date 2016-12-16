@@ -41,6 +41,12 @@ public class StringUtils
         return ret;
     }
     
+    private static String unitString(int amount, String unit) {
+        String ret = (amount> 0 ? amount+" "+unit : "");
+        ret += (amount > 1 ? "s" : "");
+        return ret;
+    }
+    
     public static String[]findURLsInDoc(String page, Pattern reggie, Set<String> postURLs)
     {
         Set<String> matches = new HashSet<String>();//store in a set to remove exact duplicates
