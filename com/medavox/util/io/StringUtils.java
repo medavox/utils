@@ -10,6 +10,36 @@ import java.io.FileReader;
 
 public class StringUtils
 {
+    /**Print the duration of something in human-readable format,
+     * displaying only the 2 highest non-zero time units.*/
+    public static String getDuration(long duration) {
+        long dur = Math.abs(duration); //even if it's in the past, make it positive
+        int[] amounts = {0, 0, 0};
+        String[] unitNames = {"day", "hour", "minute"};
+        amounts[0] = (int) (dur / (24 * 60 * 60 * 1000));//days
+        amounts[1] = (int) ((dur / (1000*60*60)) % 24);//hours
+        amounts[2] = (int) ((dur / (1000*60)) % 60);//minutes
+        //amounts[3] = (int) (dur  / 1000) % 60 ;//seconds
+
+        int rawSeconds = (int)(dur / 1000);
+
+        //if it's less than 2 minutes, just return this as seconds
+        if(rawSeconds <= 120) {
+            return unitString(rawSeconds, "second");
+        }
+
+        //only display minutes or larger
+        int unitsCounted = 0;
+        String ret = "";
+        for(int i = 0; i < amounts.length && unitsCounted < 2; i++) {
+            if(amounts[i] > 0) {
+                //if(i == amounts.length-1 && amounts[i-1] >= 5)//if we're dealing with >5 minutes
+                ret += unitString(amounts[i], unitNames[i])+" ";
+                unitsCounted++;
+            }
+        }
+        return ret;
+    }
     
     public static String[]findURLsInDoc(String page, Pattern reggie, Set<String> postURLs)
     {
