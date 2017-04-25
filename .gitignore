@@ -1,1 +1,6 @@
 *.class
+.DS_Store
+.gradle/
+.git
+.idea
+build
