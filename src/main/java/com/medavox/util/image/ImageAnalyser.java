@@ -143,11 +143,11 @@ public class ImageAnalyser
     {
         return simpleDistance(pixelA, pixelB) <= threshold;
     }
-    
+    /*
     Map<Integer, Integer> mergeSimilarColours(Map<Integer, Integer> in, int threshold)
     {
         
-    }
+    }*/
     
     public int pixelsWhichAreTopNColours(int[][] histo, int topNum)
     {

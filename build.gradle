@@ -19,9 +19,6 @@ group = 'com.github.medavox'
 // In this section you declare the dependencies for your production and test code
 dependencies {
     
-    // jsoup HTML parser library @ http://jsoup.org/
-    compile 'org.jsoup:jsoup:1.10.2'
-
     // The production code uses the SLF4J logging API at compile time
     //compile 'org.slf4j:slf4j-api:1.7.21'
 
