@@ -7,6 +7,9 @@ apply plugin: 'java'
 //maven support needed for compatbility with Jitpack
 apply plugin: 'maven'
 
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use 'jcenter' for resolving your dependencies.
