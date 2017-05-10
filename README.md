@@ -9,7 +9,7 @@ To use code from this repository in your gradle-enabled project, just add this a
 ...
 
 dependencies {
-    compile 'com.github.medavox:utils:v0.4'
+    compile 'com.github.medavox:utils:v0.5'
 }
 
 ...
