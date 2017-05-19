@@ -41,7 +41,7 @@ public class Validator {
         check(rule, new Exception(/*"validation failed: "+*/explan), onFail);
     }
 
-    public static void check(boolean rule, Exception exceptionToThrow, Runnable onFail) throws Exception {
+    public static <T extends Exception> void check(boolean rule, T exceptionToThrow, Runnable onFail) throws T {
         if(!rule) {
             if(onFail != null) {
                 onFail.run();
@@ -50,7 +50,7 @@ public class Validator {
         }
     }
 
-    public static void check(boolean rule, Exception exceptionToThrow) throws Exception{
+    public static <T extends Exception> void check(boolean rule, T exceptionToThrow) throws T {
         check(rule, exceptionToThrow, null);
     }
 
