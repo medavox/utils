@@ -6,7 +6,7 @@ package com.medavox.util.io;
  * BigInteger does not fit my needs.
  * NOTE: in all these methods, 
  * the leftmost bit of the leftmost byte (bit 0 of byte 0) is the LEAST SIGNIFICANT.
- * Although this reads the nubmer backwards in my head, 
+ * Although in my heads this reads the number backwards, 
  * it does mean we don't have to shift everything down by one when we add another byte, 
  * and the byte indexes can be used easily as powers of 256 to make unit markers.
  * 
@@ -36,6 +36,7 @@ public abstract class BytesAsUInt {
     public static byte[] multiply(byte[] a, byte[] b) {
         while(!equalsZero(b)) {
             add(a, a);
+            decrement(b);
         }
         return a;
     }
@@ -46,12 +47,16 @@ public abstract class BytesAsUInt {
             result = increment(result);
             subtract(a, b);
         }
-        return a;
+        return result;
     }
     
     public static byte[] mod(byte[] a, byte[] b) {
-        //todo!
-        return newZeroedBytes(1);
+        byte[] result = newZeroedBytes(a.length);
+        while(greaterThan(a, b)) {
+            result = increment(result);
+            subtract(a, b);
+        }
+        return a;
     }
     /**Decrement the passed byte[]-uint. NOTE:
      * just like the rest of java, 
@@ -164,13 +169,21 @@ public abstract class BytesAsUInt {
     }
     
     public static long asLong (byte[] a) {
-        return 0L;
+        if(a.length > 4) {
+            //the number is too large to store in a long
+        }
+        else {
+            long result = 0;
+            while(!equalsZero(a)) {
+                decrement(a);
+                result++;
+                //todo:handle overflows, from our 64 bits being too large for long's 2^63-1
+            }
+        }
     }
     
     public static byte[] fromLong(long l) {
         //todo!
         return newZeroedBytes(1);
     }
-    
-
 }
