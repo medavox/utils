@@ -168,7 +168,7 @@ public abstract class BytesAsUInt {
         return result;
     }
     
-    public static long asLong (byte[] a) {
+    /*public static long asLong (byte[] a) {
         if(a.length > 4) {
             //the number is too large to store in a long
         }
@@ -180,10 +180,11 @@ public abstract class BytesAsUInt {
                 //todo:handle overflows, from our 64 bits being too large for long's 2^63-1
             }
         }
+        return result;
     }
     
     public static byte[] fromLong(long l) {
         //todo!
         return newZeroedBytes(1);
-    }
+    }*/
 }

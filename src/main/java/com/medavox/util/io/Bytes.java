@@ -34,4 +34,23 @@ public class Bytes
         setter = (byte)~setter;
         return (byte)(setter & settee);
     }
+    
+    /**based on code from https://stackoverflow.com/questions/9655181*/
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        if(bytes == null ) {
+            return "<null>";
+        }
+        if(bytes.length == 0) {
+            return "<empty>";
+        }
+        char[] hexChars = new char[bytes.length * 3];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 3] = hexArray[v >>> 4];
+            hexChars[j * 3 + 1] = hexArray[v & 0x0F];
+            hexChars[j * 3 + 2] = ' ';
+        }
+        return new String(hexChars);
+    }
 }
