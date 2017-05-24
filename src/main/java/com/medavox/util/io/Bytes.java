@@ -1,5 +1,5 @@
 package com.medavox.util.io;
-
+/**Low-level bit-twiddling ops. bit numbers are 0 to 7.*/
 public class Bytes
 {
     private static void validate(int bitNum)
