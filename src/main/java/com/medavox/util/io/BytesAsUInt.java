@@ -6,11 +6,12 @@ package com.medavox.util.io;
  * BigInteger does not fit my needs.
  * NOTE: in all these methods, 
  * the leftmost bit of the leftmost byte (bit 0 of byte 0) is the LEAST SIGNIFICANT.
- * Although in my heads this reads the number backwards, 
+ * Although in my mind this reads the number backwards,
  * it does mean we don't have to shift everything down by one when we add another byte, 
  * and the byte indexes can be used easily as powers of 256 to make unit markers.
  * 
- * ALSO, this class does nothing to guard against null bytes. So be careful.*/
+ * ALSO, this class does nothing to guard against null bytes. So be careful.#
+ * todo: improve class performance*/
 public abstract class BytesAsUInt {
     /**Adds a and b, and returns an array of the same size of a.
      * Overflows 0 or more times.*/
@@ -168,23 +169,48 @@ public abstract class BytesAsUInt {
         return result;
     }
     
-    /*public static long asLong (byte[] a) {
+    public static int toInt (byte[] a) throws NumberFormatException {
         if(a.length > 4) {
             //the number is too large to store in a long
+            throw new NumberFormatException("byte[] is too large to store in an int");
         }
-        else {
-            long result = 0;
-            while(!equalsZero(a)) {
-                decrement(a);
-                result++;
-                //todo:handle overflows, from our 64 bits being too large for long's 2^63-1
+        int out = 0;
+        while(!equalsZero(a)) {
+            if(out == Integer.MAX_VALUE) {
+                throw new NumberFormatException("value of argument byte[] is too high to store in an int");
             }
+            decrement(a);
+            out++;
         }
-        return result;
+        return out;
     }
     
-    public static byte[] fromLong(long l) {
-        //todo!
+    public static long toLong (byte[] a) throws NumberFormatException {
+        if(a.length > 8) {
+            //the number is too large to store in a long
+            throw new NumberFormatException("byte[] is too long to store in a long");
+        }
+        long out = 0;
+        while(!equalsZero(a)) {
+            if(out == Long.MAX_VALUE) {
+                throw new NumberFormatException("value of argument byte[] is too high to store in a long");
+            }
+            decrement(a);
+            out++;
+            //todo:handle overflows, from our 64 bits being too large for long's 2^63-1
+        }
+        return out;
+    }
+    
+    public static byte[] fromLong(long l) throws NumberFormatException {
+        if(l < 0) {
+            throw new NumberFormatException("Argument cannot be < 0. This data type is unsigned!");
+        }
+        byte[] out = newZeroedBytes(8);
+        while(l > 0) {
+            increment(out);
+            l--;
+        }
         return newZeroedBytes(1);
-    }*/
+    }
 }
