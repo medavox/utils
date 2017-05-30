@@ -10,7 +10,7 @@ package com.medavox.util.io;
  * it does mean we don't have to shift everything down by one when we add another byte, 
  * and the byte indexes can be used easily as powers of 256 to make unit markers.
  * 
- * ALSO, this class does nothing to guard against null bytes. So be careful.#
+ * ALSO, this class does nothing to guard against null bytes. So be careful.
  * todo: improve class performance*/
 public abstract class BytesAsUInt {
     /**Adds a and b, and returns an array of the same size of a.
@@ -41,7 +41,7 @@ public abstract class BytesAsUInt {
         }
         return a;
     }
-    
+    /**return the result of a/b*/
     public static byte[] divide(byte[] a, byte[] b) {
         byte[] result = newZeroedBytes(a.length);
         while(greaterThan(a, b)) {
@@ -50,7 +50,7 @@ public abstract class BytesAsUInt {
         }
         return result;
     }
-    
+    /**return the result of a % b*/
     public static byte[] mod(byte[] a, byte[] b) {
         byte[] result = newZeroedBytes(a.length);
         while(greaterThan(a, b)) {
@@ -128,24 +128,19 @@ public abstract class BytesAsUInt {
     
     /**Returns true if a > b.*/
     public static boolean greaterThan(byte[] a, byte[] b) {
-        if(a.length != b.length) {
-            return a.length > b.length;
-        }
-        else {
-            for (int i = (a.length*8)-1; i > 0; i--) {
-                boolean bitA = Bytes.testBit(i % 8, a[i/8]);
-                boolean bitB = Bytes.testBit(i % 8, b[i/8]);
-                
-                if(bitA != bitB) {
-                    //if they're not equal, then one is true and the other false
-                    //if bitA is the false one, it's lesser, so return false
-                    //if bitA is the true one, it is greater, so return true
-                    return bitA;
-                }
+        for (int i = (a.length *8)-1; i > 0; i--) {
+            boolean bitA = Bytes.testBit(i % 8, a[i/8]);
+            boolean bitB = Bytes.testBit(i % 8, b[i/8]);
+
+            if(bitA != bitB) {
+                //if they're not equal, then one is true and the other false
+                //if bitA is the false one, it's lesser, so return false
+                //if bitA is the true one, it is greater, so return true
+                return bitA;
             }
-            //everything is equal
-            return false;
         }
+        //everything is equal
+        return false;
     }
     
     /**Checks whether every byte in the passed array is equal to 0x00.*/
