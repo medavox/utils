@@ -1,5 +1,7 @@
 package com.medavox.util.io;
 
+import java.util.Arrays;
+
 /**Allows you to perform basic arithmetic operations on arbitrary-length
  * byte arrays as if they were unsigned integers.
  * I am no mathematician, so there may be faster implementations.
@@ -12,10 +14,17 @@ package com.medavox.util.io;
  * 
  * ALSO, this class does nothing to guard against null bytes. So be careful.
  * todo: improve class performance*/
+/*
+ * Todo:IT TURNS OUT that when we modify the byte arrays passed to us in each method,
+ * the array we're modifying is the same as the underlying one: the exact same array in the method call.
+ * so doing "increment(a)" is wrongly the same as "a = increment(a)". b is also affected when used.
+ * Also, doing "byte[] c = a" means c still points to the same backing data, and is also modified.
+ * So all these methods are wrong: they need to copy the array contents before modifying them in-place*/
 public abstract class BytesAsUInt {
     /**Adds a and b, and returns an array of the same size of a.
      * Overflows 0 or more times.*/
     public static byte[] add(byte[] a, byte[] b) {
+
         //byte[] result = new byte[Math.max(a.length, b.length)];
         while(!equalsZero(b)) {
             increment(a);
@@ -23,6 +32,40 @@ public abstract class BytesAsUInt {
         }
         return a;
     }
+
+    /**Adds a and b, and returns an array of the same size of a.
+     * The returned array is at least as large as the larger of the two arrays,
+     * and is large enough to hold the result without overflow.*/
+    public static byte[] add_newImpl(byte[] a1, byte[] b1) {
+        byte[] a = Arrays.copyOf(a1, a1.length);
+        byte[] b = Arrays.copyOf(b1, b1.length);
+        //guarantee that b is a shorter-or-equal-length array
+        if(a.length < b.length) {
+            //if b is longer than a, swap them
+            byte[] tmp = a;
+            a = b;
+            b = tmp;
+        }
+        //per-byte outer loop
+        for(int i = 0; i < b.length; i++) {
+            int carry = b[i] & 0xFF;
+            int j = i;
+            while (carry != 0) {
+                //zip together the 2 bytes, and pass their carry to the next loop
+                if(j >= a.length) {
+                    //grow array
+                    a = growArrayByOne(a);
+                }
+                int aByte = a[j] & 0xFF;
+                int result = aByte+carry;
+                a[j] = (byte)(result % 256);
+                carry = result / 256;
+                j++;
+            }
+        }
+        return a;
+    }
+
     
     /**Subtracts b from a, and returns an array the size of a.
      * Underflows 0 or more times.*/
@@ -36,7 +79,7 @@ public abstract class BytesAsUInt {
     
     public static byte[] multiply(byte[] a, byte[] b) {
         while(!equalsZero(b)) {
-            add(a, a);
+            a = add(a, a);
             decrement(b);
         }
         return a;
@@ -46,7 +89,7 @@ public abstract class BytesAsUInt {
         byte[] result = newZeroedBytes(a.length);
         while(greaterThan(a, b)) {
             result = increment(result);
-            subtract(a, b);
+            a = subtract(a, b);
         }
         return result;
     }
@@ -55,7 +98,7 @@ public abstract class BytesAsUInt {
         byte[] result = newZeroedBytes(a.length);
         while(greaterThan(a, b)) {
             result = increment(result);
-            subtract(a, b);
+            a = subtract(a, b);
         }
         return a;
     }
@@ -207,5 +250,58 @@ public abstract class BytesAsUInt {
             l--;
         }
         return newZeroedBytes(1);
+    }
+
+    public boolean equalsIgnoreArrayLength(byte[] a, byte[] b) {
+        //todo!
+        return false;
+    }
+
+    /**Generate a byte array of at least the specified length, containing all of the passed number which fits
+     * @param value the value*/
+    public static byte[] genByteArray(int value, int minWidth) {
+        if(minWidth < 1) {throw new IllegalArgumentException("width must be at least 1");}
+        if(value < 0) {throw new IllegalArgumentException("value must not be negative");}
+        if(value == 0) {
+            return newZeroedBytes(minWidth);
+        }
+        byte[] b = new byte[0];
+        int i = 0;
+        while(value != 0) {
+            b = BytesAsUInt.growArrayByOne(b);
+            b[i] = (byte)(value % 256);
+            i++;
+            value /= 256;
+        }
+        while(b.length < minWidth) {
+            b = growArrayByOne(b);
+        }
+        return b;
+    }
+
+    /**Generate a byte array exactly long enough to contain the passed number*/
+    private byte[] genByteArray(int value) {
+        if(value == 0) {
+            return new byte[] {(byte)0x00};
+        }
+        if(value < 0) {throw new IllegalArgumentException("value must not be negative");}
+        byte[] b = new byte[0];
+        int i = 0;
+        while(value != 0) {
+            b = BytesAsUInt.growArrayByOne(b);
+            b[i] = (byte)(value % 256);
+            i++;
+            value /= 256;
+        }
+        return b;
+    }
+
+    public static byte[] growArrayByOne(byte[] a) {
+        byte[] out = new byte[a.length+1];
+        for(int i = 0; i < a.length; i++) {
+            out[i] = a[i];
+        }
+        out[a.length] = (byte)0;
+        return out;
     }
 }
