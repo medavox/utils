@@ -1,8 +1,6 @@
-package com.medavox.utils.io;
+package com.medavox.util.io;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**@author Adam Howard
@@ -10,10 +8,6 @@ import java.util.Locale;
  Provides static methods for pretty-printing a unix-epoch time in a variety of brief but human-readable formats.
  Uses UK date formats, where the units are listed in ascending order of size.**/
 public abstract class DateTime {
-
-    private static final String TIME = "time";
-    private static final String DATE = "date";
-    private static final String DATETIME = "datetime";
     private static Calendar cal = Calendar.getInstance();
 
     public enum TimeFormat {
