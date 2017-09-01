@@ -10,17 +10,34 @@ import java.io.FileReader;
 
 public class StringUtils
 {
+    
+    private static final String[] unitNames = {"millisecond", "second", "minute", "hour", "day", "week"};
+    private static final String[] shortUnitNames = {"ms", "s", "m", "h", "d", "w"};
+    private static final int[] multipliers = {1000, 60, 60, 24, 7};
+    private static int[] quants = new int[unitNames.length];
+    
+    static 
+    {
+        for(int i = 0; i < quants.length; i++)
+        {
+            int mult = 1;
+            for(int j = i; j >= 0; j--)
+            {
+                try {mult *= multipliers[j];}
+                catch(IndexOutOfBoundsException ioobe){}
+            }
+        }
+        System.out.println("quants:"+Arrays.toString(quants));
+    }
     /**Print the duration of something in human-readable format,
      * displaying only the 2 highest non-zero time units.*/
     public static String getDuration(long duration) {
         long dur = Math.abs(duration); //even if it's in the past, make it positive
-        int[] amounts = {0, 0, 0};
-        String[] unitNames = {"day", "hour", "minute"};
-        amounts[0] = (int) (dur / (24 * 60 * 60 * 1000));//days
-        amounts[1] = (int) ((dur / (1000*60*60)) % 24);//hours
-        amounts[2] = (int) ((dur / (1000*60)) % 60);//minutes
-        //amounts[3] = (int) (dur  / 1000) % 60 ;//seconds
 
+        //amounts[3] = (int) (dur  / 1000) % 60 ;//seconds
+            quants[i] = (int)(dur / mult);
+            try {quants[i] %= multipliers[i];}
+            catch(IndexOutOfBoundsException ioobe){}
         int rawSeconds = (int)(dur / 1000);
 
         //if it's less than 2 minutes, just return this as seconds
@@ -42,12 +59,12 @@ public class StringUtils
     }
     
     private static String unitString(int amount, String unit) {
-        String ret = (amount> 0 ? amount+" "+unit : "");
+        String ret = (amount > 0 ? amount+" "+unit : "");
         ret += (amount > 1 ? "s" : "");
         return ret;
     }
     
-    public static String[]findURLsInDoc(String page, Pattern reggie, Set<String> postURLs)
+    public static String[] findURLsInDoc(String page, Pattern reggie, Set<String> postURLs)
     {
         Set<String> matches = new HashSet<String>();//store in a set to remove exact duplicates
         
