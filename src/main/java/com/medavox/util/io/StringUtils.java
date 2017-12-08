@@ -1,17 +1,18 @@
 package com.medavox.util.io;
 
-import java.util.Set;
-import java.util.Scanner;
-import java.util.HashSet;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils
 {
     
-    private static final String[] unitNames = {"millisecond", "second", "minute", "hour", "day", "week"};
+    /*private static final String[] unitNames = {"millisecond", "second", "minute", "hour",
+            "day", "week"};
     private static final String[] shortUnitNames = {"ms", "s", "m", "h", "d", "w"};
     private static final int[] multipliers = {1000, 60, 60, 24, 7};
     private static int[] quants = new int[unitNames.length];
@@ -20,7 +21,7 @@ public class StringUtils
     {
         for(int i = 0; i < quants.length; i++)
         {
-            int mult = 1;
+
             for(int j = i; j >= 0; j--)
             {
                 try {mult *= multipliers[j];}
@@ -28,12 +29,12 @@ public class StringUtils
             }
         }
         System.out.println("quants:"+Arrays.toString(quants));
-    }
+    }*/
     /**Print the duration of something in human-readable format,
      * displaying only the 2 highest non-zero time units.*/
-    public static String getDuration(long duration) {
+    /*public static String getDuration(long duration) {
         long dur = Math.abs(duration); //even if it's in the past, make it positive
-
+        int mult = 1;
         //amounts[3] = (int) (dur  / 1000) % 60 ;//seconds
             quants[i] = (int)(dur / mult);
             try {quants[i] %= multipliers[i];}
@@ -56,7 +57,7 @@ public class StringUtils
             }
         }
         return ret;
-    }
+    }*/
     
     private static String unitString(int amount, String unit) {
         String ret = (amount > 0 ? amount+" "+unit : "");
@@ -89,7 +90,7 @@ public class StringUtils
     /**Find all substrings matching the supplied regex Pattern, in the supplied string.
      * Finds one or more URLs in the supplied document, according to supplied regex.
      * @param page the string to search in
-     * @param reggie the regular expression to search for
+     * @param reg the regular expression to search for
      * @return a list of matching substrings*/
     public static String[] findURLsInDoc(String page, Pattern reg)
     {
