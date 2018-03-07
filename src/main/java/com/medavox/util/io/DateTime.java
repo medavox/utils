@@ -5,9 +5,12 @@ import java.util.Locale;
 
 /**@author Adam Howard
  * on 04/05/2016
- Provides static methods for pretty-printing a unix-epoch time in a variety of brief but human-readable formats.
- Uses UK date formats, where the units are listed in ascending order of size.**/
+ * Static methods for pretty-printing a unix-epoch time in various brief but human-readable formats.
+ * Uses 24-hour UK date formats, where the units are listed in ascending order of size.
+ * For instance: 23:59:59.999 on 31/12/2020.
+ */
 public abstract class DateTime {
+
     private static Calendar cal = Calendar.getInstance();
 
     public enum TimeFormat {
@@ -103,11 +106,15 @@ public abstract class DateTime {
     }
 
     public static String get(long timeInMillis, TimeFormat precision, DateFormat dateLen) {
+        return getDate(timeInMillis, dateLen) + "  " + getTime(timeInMillis, precision);
+    }
+
+    public static String get2(long timeInMillis, TimeFormat precision, DateFormat dateLen) {
         return getTime(timeInMillis, precision)+" on "+getDate(timeInMillis, dateLen);
     }
 
     /**Print the duration of something in human-readable format,
-     * displaying only the 2 highest non-zero time units.*/
+     * displaying only the 2 largest non-zero time units.*/
     public static String getDuration(long duration) {
         long dur = Math.abs(duration); //even if it's in the past, make it positive
         int[] amounts = {0, 0, 0};
