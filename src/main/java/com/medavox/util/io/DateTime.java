@@ -106,7 +106,7 @@ public abstract class DateTime {
     }
 
     public static String get(long timeInMillis, TimeFormat precision, DateFormat dateLen) {
-        return getDate(timeInMillis, dateLen) + "  " + getTime(timeInMillis, precision);
+        return getDate(timeInMillis, dateLen) + " " + getTime(timeInMillis, precision);
     }
 
     public static String get2(long timeInMillis, TimeFormat precision, DateFormat dateLen) {
